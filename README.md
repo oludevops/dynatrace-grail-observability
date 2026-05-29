@@ -39,7 +39,6 @@ dql-queries/
   log-error-analysis.dql      — ERROR/WARN log patterns by service
   throughput-timeseries.dql   — makeTimeseries request trend (5m intervals)
   slowest-operations.dql      — top 15 operations by p99 latency
-  apdex-score.dql             — Apdex score with calibrated T threshold
 
 dashboards/
   payment-services.json       — exportable Gen3 dashboard definition
@@ -126,7 +125,6 @@ fetch spans, from: now()-2h
 | Error rate | Absolute | > 1% | > 2% |
 | P99 latency | Relative | > 10% above baseline | > 20% above baseline |
 | DB span p99 | Relative | > 20% above baseline | > 30% above baseline |
-| Apdex score | Absolute | < 0.90 | < 0.85 |
 
 See `srg/payment-guardian.md` for full objective DQL and rationale.
 
