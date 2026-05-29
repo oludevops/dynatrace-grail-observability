@@ -55,13 +55,6 @@ Evaluated automatically on each deployment event via Workflow trigger.
 - **Fail:** > 30% above baseline
 - **Rationale:** DB span latency spiking is the earliest signal of connection pool exhaustion — this objective would have caught the Oracle incident before customer impact.
 
-### 4. Apdex score
-- **DQL:** See `dql-queries/apdex-score.dql`
-- **Comparison:** Absolute
-- **Warning:** < 0.90
-- **Fail:** < 0.85
-- **Rationale:** Composite user experience score. Drops in Apdex correlate with customer-visible degradation.
-
 ---
 
 ## Integration with Workflow
