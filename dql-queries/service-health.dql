@@ -1,1 +1,17 @@
+// Service health overview — total requests, error rate, p99 latency
+// Validated against Dynatrace Playground (frontend service)
+// Duration is stored in nanoseconds; divide by 1,000,000 for milliseconds
+
+fetch spans, from: now()-2h
+| filter service.name == "frontend"
+| summarize
+    total_requests = count(),
+    errors         = countIf(isError == true),
+    error_rate     = round(toDouble(countIf(isError == true)) / count() * 100, decimals: 2),
+    p95_ns         = percentile(duration, 95),
+    p99_ns         = percentile(duration, 99)
+| fieldsAdd
+    p95_ms = round(toDouble(p95_ns) / 1000000, decimals: 2),
+    p99_ms = round(toDouble(p99_ns) / 1000000, decimals: 2)
+| fields total_requests, errors, error_rate, p95_ms, p99_ms
 
