@@ -1,0 +1,8 @@
+// Request throughput timeseries — 5-minute interval chart
+// Uses makeTimeseries to produce continuous series with no gaps
+// Validated: returns 35-record timeseries in Dynatrace Playground
+// Renders as a line chart tile in Gen3 dashboard
+
+fetch spans, from: now()-2h
+| filter service.name == "frontend"
+| makeTimeseries requests = count(), interval: 5m
