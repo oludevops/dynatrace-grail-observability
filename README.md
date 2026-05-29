@@ -1,1 +1,1 @@
-# dynatrace-grail-observability
+# Dynatrace-grail-observability
