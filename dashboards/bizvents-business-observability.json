@@ -1,0 +1,174 @@
+{
+  "tiles": {
+    "0": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch bizevents, from: now()-2h\n| filter event.type == \"astroshop.web.checkout_success\"\n| summarize total_orders = count()",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "",
+      "type": "data",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "autoSelectVisualization": false,
+        "singleValue": {
+          "label": "Total Orders"
+        }
+      }
+    },
+    "2": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch bizevents, from: now()-2h\n| summarize checkouts = countIf(event.type == \"astroshop.web.checkout_success\"), fulfilled = countIf(event.type == \"sent.for.delivery\")\n| fieldsAdd fulfilment_rate = round(toDouble(fulfilled) / toDouble(checkouts) * 100, decimals: 1)\n| fields fulfilment_rate",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "",
+      "type": "data",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "autoSelectVisualization": false,
+        "singleValue": {
+          "label": "Fulfilment rate (%)"
+        },
+        "unitsOverrides": [
+          {
+            "added": 1780080001880,
+            "baseUnit": "percent",
+            "cascade": null,
+            "decimals": null,
+            "delimiter": false,
+            "displayUnit": null,
+            "identifier": "fulfilment_rate",
+            "suffix": "",
+            "unitCategory": "percentage"
+          }
+        ]
+      }
+    },
+    "3": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch bizevents, from: now()-2h\n| filter event.type == \"astroshop.web.checkout_success\"\n| makeTimeseries orders = count(), interval: 5m",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "Order volume over time (5m intervals)",
+      "type": "data",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "autoSelectVisualization": false
+      }
+    },
+    "4": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch bizevents, from: now()-2h\n| filter event.type == \"astroshop.web.products\" or event.type == \"astroshop.web.cart\" or event.type == \"astroshop.web.checkout_success\" or event.type == \"sent.for.delivery\" or event.type == \"consume.order\"\n| summarize event_count = count(), by: { event.type }\n| sort event_count desc",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "Purchase funnel",
+      "type": "data",
+      "visualization": "table",
+      "visualizationSettings": {
+        "autoSelectVisualization": true,
+        "table": {
+          "columnWidths": {
+            "[\"event_count\"]": 1720.3,
+            "[\"event.type\"]": 558.38
+          },
+          "sortBy": [
+            {
+              "columnId": "[\"event_count\"]",
+              "direction": "descending"
+            }
+          ]
+        }
+      }
+    },
+    "5": {
+      "content": "> **Funnel insight:** 3,550 successful checkouts but only 1,785 sent for delivery — a 50% fulfilment rate. This drop-off between checkout and fulfilment is a business-level signal that complements technical observability.",
+      "type": "markdown"
+    },
+    "6": {
+      "content": "****This BizEvents data was build using test data from Dynatrace Grail - By Oludolapo Lawrence****",
+      "type": "markdown"
+    }
+  },
+  "variables": [],
+  "annotations": [],
+  "settings": {},
+  "layouts": {
+    "0": {
+      "h": 4,
+      "w": 10,
+      "x": 0,
+      "y": 2
+    },
+    "2": {
+      "h": 4,
+      "w": 13,
+      "x": 10,
+      "y": 2
+    },
+    "3": {
+      "h": 4,
+      "w": 23,
+      "x": 0,
+      "y": 6
+    },
+    "4": {
+      "h": 4,
+      "w": 23,
+      "x": 0,
+      "y": 11
+    },
+    "5": {
+      "h": 1,
+      "w": 23,
+      "x": 0,
+      "y": 10
+    },
+    "6": {
+      "h": 2,
+      "w": 23,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "importedWithCode": false,
+  "version": 21
+}
