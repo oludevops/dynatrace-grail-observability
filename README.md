@@ -9,7 +9,7 @@ End-to-end observability solution for payment transaction monitoring, built nati
 
 ## Dashboard
 
-![Payment Services Observability Dashboard](dashboards/dashboard-screenshot.png)
+![Payment Services Observability Dashboard](dynatrace-grail-dashboard.jpg)
 
 ---
 
