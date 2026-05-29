@@ -1,0 +1,9 @@
+// Log error analysis — ERROR and WARN events by service
+// Validated: returns 20 records in Dynatrace Playground environment
+// Sorted by error_count descending to surface highest-volume issues first
+
+fetch logs, from: now()-2h
+| filter loglevel == "ERROR" or loglevel == "WARN"
+| summarize error_count = count(), by: { loglevel, service.name }
+| sort error_count desc
+| limit 20
