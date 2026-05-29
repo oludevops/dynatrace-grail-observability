@@ -1,0 +1,396 @@
+{
+  "tiles": {
+    "0": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch spans, from: now()-2h\n| filter service.name == \"frontend\"\n| summarize total_requests = count()",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "Requests",
+      "type": "data",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "autoSelectVisualization": false,
+        "singleValue": {
+          "labelMode": "data"
+        }
+      }
+    },
+    "1": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch spans, from: now()-2h\n| filter service.name == \"frontend\"\n| summarize error_rate = round(toDouble(countIf(isError == true)) / count() * 100, decimals: 2)",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "",
+      "type": "data",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "autoSelectVisualization": false,
+        "coloring": {
+          "colorRules": [
+            {
+              "color": "var(--dt-colors-charts-apdex-excellent-default, #2a7453)",
+              "colorMode": "single-color",
+              "comparator": "<",
+              "field": "error_rate",
+              "type": "double",
+              "value": 5
+            }
+          ]
+        },
+        "singleValue": {
+          "label": "Error rate (%) "
+        }
+      }
+    },
+    "2": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch spans, from: now()-2h\n| filter service.name == \"frontend\"\n| summarize p99_ns = percentile(duration, 99)\n| fieldsAdd p99_ms = round(toDouble(p99_ns) / 1000000, decimals: 2)\n| fields p99_ms",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "",
+      "type": "data",
+      "visualization": "singleValue",
+      "visualizationSettings": {
+        "autoSelectVisualization": false,
+        "coloring": {
+          "colorRules": [
+            {
+              "color": "var(--dt-colors-charts-apdex-excellent-default, #2a7453)",
+              "colorMode": "single-color",
+              "comparator": "≤",
+              "field": "p99_ms",
+              "type": "double",
+              "value": 500
+            },
+            {
+              "color": "var(--dt-colors-charts-apdex-unacceptable-default, #cd3741)",
+              "colorMode": "single-color",
+              "comparator": "≥",
+              "field": "p99_ms",
+              "type": "double",
+              "value": 500
+            }
+          ]
+        },
+        "singleValue": {
+          "label": "P99 latency (ms)"
+        }
+      }
+    },
+    "3": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "description": "Request throughput (5m intervals)",
+      "query": "fetch spans, from: now()-2h\n| filter service.name == \"frontend\"\n| makeTimeseries requests = count(), interval: 5m",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "",
+      "type": "data",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "autoSelectVisualization": true
+      }
+    },
+    "4": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch spans, from: now()-2h\n| filter service.name == \"frontend\"\n| fieldsAdd avg_ms = round(toDouble(duration) / 1000000, decimals: 3)\n| summarize call_count = count(), p99_ms = round(toDouble(percentile(duration, 99)) / 1000000, decimals: 3), by: { span.name }\n| sort p99_ms desc\n| limit 15",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "Slowest operations by p99",
+      "type": "data",
+      "visualization": "table",
+      "visualizationSettings": {
+        "autoSelectVisualization": true,
+        "table": {
+          "columnWidths": {
+            "[\"call_count\"]": 135.8,
+            "[\"p99_ms\"]": 160.9,
+            "[\"span.name\"]": 384
+          }
+        },
+        "unitsOverrides": [
+          {
+            "added": 1780071610487,
+            "baseUnit": "nanosecond",
+            "cascade": null,
+            "decimals": null,
+            "delimiter": false,
+            "displayUnit": null,
+            "identifier": "avg_ms",
+            "suffix": "",
+            "unitCategory": "time"
+          },
+          {
+            "added": 1780071632876,
+            "baseUnit": "none",
+            "cascade": null,
+            "decimals": null,
+            "delimiter": false,
+            "displayUnit": null,
+            "identifier": "call_count",
+            "suffix": "",
+            "unitCategory": "unspecified"
+          },
+          {
+            "added": 1780071643611,
+            "baseUnit": "nanosecond",
+            "cascade": null,
+            "decimals": null,
+            "delimiter": false,
+            "displayUnit": null,
+            "identifier": "p99_ms",
+            "suffix": "",
+            "unitCategory": "time"
+          }
+        ]
+      }
+    },
+    "5": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch spans, from: now()-2h\n| filter isNotNull(db.statement) or isNotNull(db.system)\n| summarize p99_ms = round(toDouble(percentile(duration, 99)) / 1000000, decimals: 3), call_count = count(), error_count = countIf(isError == true), by: { service.name }\n| sort p99_ms desc",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "Database span latency",
+      "type": "data",
+      "visualization": "table",
+      "visualizationSettings": {
+        "autoSelectVisualization": true,
+        "coloring": {
+          "colorRules": [
+            {
+              "color": "var(--dt-colors-charts-apdex-poor-default, #d56b1a)",
+              "colorMode": "single-color",
+              "comparator": "≥",
+              "field": "p99_ms",
+              "metadata": {
+                "applyTo": "value",
+                "fields": [
+                  "p99_ms"
+                ]
+              },
+              "type": "double",
+              "value": 500
+            }
+          ]
+        },
+        "table": {
+          "columnWidths": {
+            "[\"call_count\"]": 127.9,
+            "[\"error_count\"]": 173.4,
+            "[\"p99_ms\"]": 128.2,
+            "[\"service.name\"]": 236.3
+          },
+          "sortBy": [
+            {
+              "columnId": "[\"avg_ms\"]",
+              "direction": "ascending"
+            }
+          ]
+        }
+      }
+    },
+    "6": {
+      "davis": {
+        "davisVisualization": {
+          "isAvailable": true
+        },
+        "enabled": false
+      },
+      "query": "fetch logs, from: now()-2h\n| filter loglevel == \"ERROR\" or loglevel == \"WARN\"\n| summarize error_count = count(), by: { loglevel, service.name }\n| sort error_count desc\n| limit 20",
+      "querySettings": {
+        "defaultSamplingRatio": 10,
+        "defaultScanLimitGbytes": 500,
+        "enableSampling": false,
+        "maxResultMegaBytes": 1,
+        "maxResultRecords": 1000
+      },
+      "title": "Log errors by service",
+      "type": "data",
+      "visualization": "table",
+      "visualizationSettings": {
+        "autoSelectVisualization": true,
+        "coloring": {
+          "colorRules": [
+            {
+              "color": "var(--dt-colors-charts-loglevel-critical-default, #d85a9f)",
+              "colorMode": "single-color",
+              "comparator": "≥",
+              "field": "error_count",
+              "type": "long",
+              "value": 10
+            },
+            {
+              "color": "var(--dt-colors-charts-apdex-poor-default, #d56b1a)",
+              "colorMode": "single-color",
+              "comparator": "<",
+              "field": "error_count",
+              "type": "long",
+              "value": 10
+            }
+          ]
+        },
+        "table": {
+          "columnWidths": {
+            "[\"error_count\"]": 148.28,
+            "[\"loglevel\"]": 352.69,
+            "[\"service.name\"]": 655.39
+          },
+          "sortBy": [
+            {
+              "columnId": "[\"service.name\"]",
+              "direction": "ascending"
+            }
+          ]
+        }
+      }
+    },
+    "7": {
+      "content": "## At a glance · Frontend service · last 2 hours",
+      "type": "markdown"
+    },
+    "8": {
+      "content": "## Operation & database analysis",
+      "type": "markdown"
+    },
+    "9": {
+      "content": "## Log layer",
+      "type": "markdown"
+    },
+    "10": {
+      "content": "> ****About this dashboard:****\n> Built by **Oludolapo Lawrence** as part of a Dynatrace Grail observability implementation.\n> All DQL queries were authored and validated against live Grail span, log and entity data.\n> This dashboard monitors the `frontend` service — covering throughput, latency, database span analysis and log error patterns.\n> Inspired by a real production incident involving Oracle DB connection pool exhaustion that impacted payment card transactions.\n>\n> **Stack:** Dynatrace SaaS · Grail · DQL · Gen3 dashboards\n> **GitHub:** [github.com/oludevops/dynatrace-grail-observability](https://github.com/oludevops/dynatrace-grail-observability)\n**Environment:** Dynatrace Sandbox/playground",
+      "type": "markdown"
+    }
+  },
+  "variables": [],
+  "annotations": [],
+  "settings": {},
+  "layouts": {
+    "0": {
+      "h": 4,
+      "w": 7,
+      "x": 0,
+      "y": 4
+    },
+    "1": {
+      "h": 4,
+      "w": 3,
+      "x": 7,
+      "y": 4
+    },
+    "2": {
+      "h": 4,
+      "w": 6,
+      "x": 10,
+      "y": 4
+    },
+    "3": {
+      "h": 5,
+      "w": 16,
+      "x": 0,
+      "y": 8
+    },
+    "4": {
+      "h": 7,
+      "w": 8,
+      "x": 0,
+      "y": 14
+    },
+    "5": {
+      "h": 7,
+      "w": 8,
+      "x": 8,
+      "y": 14
+    },
+    "6": {
+      "h": 6,
+      "w": 16,
+      "x": 0,
+      "y": 22
+    },
+    "7": {
+      "h": 1,
+      "w": 16,
+      "x": 0,
+      "y": 3
+    },
+    "8": {
+      "h": 1,
+      "w": 16,
+      "x": 0,
+      "y": 13
+    },
+    "9": {
+      "h": 1,
+      "w": 16,
+      "x": 0,
+      "y": 21
+    },
+    "10": {
+      "h": 3,
+      "w": 16,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "importedWithCode": false,
+  "version": 21
+}
