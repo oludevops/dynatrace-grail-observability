@@ -9,7 +9,11 @@ End-to-end observability solution for payment transaction monitoring, built nati
 
 ## Dashboard
 
-![Payment Services Observability Dashboard](dynatrace-grail-dashboard.jpg)
+### Payment Services Observability — Frontend · Grail
+![Payment Services Dashboard](dashboards/dynatrace-grail-dashboard.jpg)
+
+### Business Observability — BizEvents · Astroshop
+![BizEvents Dashboard](dashboards/bizvents-dashboard-screenshot.jpg)
 
 ---
 
@@ -127,7 +131,3 @@ fetch spans, from: now()-2h
 See `srg/payment-guardian.md` for full objective DQL and rationale.
 
 ---
-
-## Connect
-
-- GitHub: [github.com/oludevops](https://github.com/oludevops)
