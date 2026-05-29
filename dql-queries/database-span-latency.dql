@@ -1,0 +1,13 @@
+// Database span latency — connection pool monitoring
+// Filters spans with db.statement or db.system attributes (database calls)
+// Directly models Oracle connection pool exhaustion detection
+// p99 > 500ms threshold is configured as an SRG objective (see srg/payment-guardian.md)
+
+fetch spans, from: now()-2h
+| filter isNotNull(db.statement) or isNotNull(db.system)
+| summarize
+    p99_ms      = round(toDouble(percentile(duration, 99)) / 1000000, decimals: 3),
+    call_count  = count(),
+    error_count = countIf(isError == true),
+    by: { service.name }
+| sort p99_ms desc
