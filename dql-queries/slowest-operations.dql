@@ -1,0 +1,14 @@
+// Slowest operations by p99 — span.name breakdown
+// Surfaces the slowest API endpoints and gRPC calls by p99 latency
+// Validated: returns 15 records including GET /api/data, POST /api/checkout,
+// grpc.oteldemo.CheckoutService/PlaceOrder
+// Note: toDouble() strips duration type metadata to prevent ns auto-formatting
+
+fetch spans, from: now()-2h
+| filter service.name == "frontend"
+| summarize
+    call_count = count(),
+    p99_ms     = round(toDouble(percentile(duration, 99)) / 1000000, decimals: 3),
+    by: { span.name }
+| sort p99_ms desc
+| limit 15
