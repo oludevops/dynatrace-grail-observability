@@ -1,0 +1,23 @@
+// Apdex score per service
+// Apdex = (Satisfied + 0.5 * Tolerating) / Total
+// T threshold must be calibrated to actual service baseline — not assumed
+// This query sets T based on observed p50 of the frontend service (19.53ms)
+// In production: set T = acceptable response time SLA (e.g. 500ms for payment APIs)
+//
+// Categories:
+//   Satisfied  : duration <= T
+//   Tolerating : T < duration <= 4T
+//   Frustrated : duration > 4T
+
+fetch spans, from: now()-2h
+| filter service.name == "frontend"
+| fieldsAdd category = if(duration <= 19530000, "satisfied",
+      else: if(duration <= 78120000, "tolerating",
+      else: "frustrated"))
+| summarize
+    satisfied  = countIf(category == "satisfied"),
+    tolerating = countIf(category == "tolerating"),
+    frustrated = countIf(category == "frustrated"),
+    total      = count()
+| fieldsAdd apdex = round((satisfied + tolerating * 0.5) / total, decimals: 3)
+| fields apdex, satisfied, tolerating, frustrated, total
